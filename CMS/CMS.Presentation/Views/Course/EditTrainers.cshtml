@@ -1,0 +1,69 @@
+﻿@model СMS.Models.EditCourseViewModel
+@{
+    ViewData["Title"] = $"Update Trainers for {Model.CurrentCourse.Name}";
+}
+<div class="row mb-lg-3">
+    <div class="col-md-6">
+        <h2>Update for @Model.CurrentCourse.Name</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="shadow p-3 mb-3 bg-white rounded">
+            <form method="post" asp-controller="Course" asp-action="EditTrainers" asp-route-courseId="@Model.CurrentCourse.Id">
+                <h3>Add Trainer</h3>
+                <hr />
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <select asp-for="@Model.EditTrainerCommand.TrainerId" class="form-select">
+                        @foreach (var trainer in Model.Trainers)
+                        {
+                            <option value="@trainer.Id">@trainer.FirstName @trainer.LastName</option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary mt-1">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col">
+        <div class="shadow p-3 mb-3 bg-white rounded">
+            <h3>Edit Trainers</h3>
+            <hr />
+            <table class="table table-hover">
+                <tr>
+                    <th>Trainer</th>
+                    <th>Order</th>
+                    <th>Action</th>
+                </tr>
+                @if (Model.CurrentCourse.Trainers != null)
+                {
+                    @foreach (var trainer in Model.CurrentCourse.Trainers)
+                    {
+                        <tr>
+                            <td>@trainer.FirstName @trainer.LastName</td>
+                            <td>
+                                <form>
+                                <input type="number" value="@trainer.VisualOrder"/>
+                                </form>
+                            </td>
+                            <td>
+                                <ul class="nav nav-list">
+                                    <li style="list-style-type: none;" class="p-1">
+                                        <a class="btn btn-outline-danger  btn-sm" asp-controller="Course" asp-action="DeleteTrainer" asp-route-trainerId="@trainer.Id" asp-route-courseId="@Model.CurrentCourse.Id">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<a type="button" class="btn btn-outline-dark" asp-controller="User" asp-action="GetModels">Back to list</a>

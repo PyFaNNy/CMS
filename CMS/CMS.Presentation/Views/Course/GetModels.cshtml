@@ -1,0 +1,124 @@
+﻿@model CMS.Application.Models.PaginatedList<CMS.Application.Aggregates.Course.Queries.GetCourses.Course>;
+@{
+    ViewData["Title"] = "Courses";
+}
+<div class="row mb-lg-3">
+    <div class="col-md-6">
+        <h4>Courses</h4>
+    </div>
+    <div class="col-md-6  text-right">
+        <a type="button" class="btn btn-primary btn-block" asp-controller="Course" asp-action="AddModel">Create Course</a>
+    </div>
+</div>
+<div class="row mb-lg-3">
+    <div class="col">
+        @if (Model?.TotalCount > 0)
+        {
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.PageIndex >= 2)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.PageIndex-1)>Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = Model.PageIndex; i <= Model.PageIndex + 5 && i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@i>@i</a>
+                        </li>
+                    }
+
+                    @if (Model.PageIndex < Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.PageIndex+1)>Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <select class="form-select">
+                @foreach(var type in ViewBag.Type)
+                {
+                    <option value="@type.Id">@type.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col">
+        <select class="form-select">
+            @foreach(var group in ViewBag.Group)
+            {
+                <option value="@group.Id">@group.Name</option>
+            }
+        </select>
+    </div>
+</div>
+<div class="shadow p-3 mb-3 bg-white rounded">
+    <table class="table">
+        <tr>
+            <th><a>Name</a></th>
+            <th><a>Type</a></th>
+            <th><a>Group</a></th>
+            <th><a>Trainers</a></th>
+            <th><a>Action</a></th>
+        </tr>
+
+        @if (Model != null)
+        {
+            @foreach (var course in Model.Items)
+            {
+                <tr>
+                    <td>@course.Name</td>
+                    <td>@course.CourseType</td>
+                    <td>@course.CourseGroup</td>
+                    <td rowspan="2">
+                        <ul>
+                            @for (int i = 0; i < course.Trainers.Count && i < 5; i++)
+                            {
+                                <li>
+                                    <a asp-controller="Trainer" asp-action="GetModel" asp-route-id="@course.Trainers[i].Id">@course.Trainers[i].FirstName @course.Trainers[i].LastName</a>
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td rowspan="2">
+                        <ul class="list-group">
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-primary btn-sm" asp-controller="Course" asp-action="GetModel" asp-route-id="@course.Id">
+                                    <i class="fa fa-info-circle"></i>
+                                </a>
+                            </li>
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-warning  btn-sm" asp-controller="Course" asp-action="UpdateModel" asp-route-id="@course.Id">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </li>
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-warning  btn-sm" asp-controller="Course" asp-action="EditTrainers" asp-route-id="@course.Id">
+                                    <i class="fa fa-user"></i>
+                                </a>
+                            </li>
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-danger  btn-sm" asp-controller="Course" asp-action="DeleteModel" asp-route-id="@course.Id">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        @course.Description
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+

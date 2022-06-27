@@ -1,0 +1,75 @@
+﻿@model СMS.Models.TrainerGroupUserViewModel
+@{
+    ViewData["Title"] = "Trainers";
+}
+<div class="row mb-lg-3">
+    <div class="col-md-6">
+        <h4>Trainers</h4>
+    </div>
+</div>
+@if (Model.TrainerGroups != null)
+{
+    @foreach (var group in Model.TrainerGroups)
+    {
+        <div class="shadow p-3 mb-3 bg-white rounded">
+            <h3>@group.Name</h3>
+        <div class="container-fluid">
+            <div class="d-flex flex-row flex-nowrap overflow-auto">
+                @foreach (var trainer in group.Trainers)
+                {
+                    <div class="card bg-light" style="width: 20%; height: 100%;">
+                        @if (trainer.Photo != null)
+                        {
+                            <img class="card-img-top" width="80%" height="80%" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(trainer.Photo))" alt="Card image cap">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@trainer.FirstName @trainer.LastName</h5>
+                            <a asp-controller="TrainerGroup" asp-action="GetModelsUsers" asp-route-id="@trainer.Id" class="btn btn-primary">
+                                <i class="fa fa-info-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+                
+            </div>
+        </div>
+        </div>
+    }
+}
+@if (Model.Current != null)
+{
+    <div class="modal fade" id="Trainer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">@Model.Current.FirstName @Model.Current.LastName</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                        @if (Model.Current.Photo != null)
+                        {
+                            <img width="100%" height="100%" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(@Model.Current.Photo))"/>
+                        }
+                        </div>
+                        <div class="col-md-9">
+                            <p>Description: @Model.Current.Description</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    window.addEventListener('load', function () {
+        const elemModal = document.querySelector('#Trainer');
+        const modal = new bootstrap.Modal(elemModal);
+        modal.show();
+    });
+</script>

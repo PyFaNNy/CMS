@@ -1,0 +1,73 @@
+﻿@model CMS.Application.Models.PaginatedList<CMS.Application.Aggregates.Course.Queries.GetCourses.Course>;
+@{
+    ViewData["Title"] = "Courses";
+}
+<div class="row mb-lg-3">
+    <div class="col-md-6">
+        <h4>Courses</h4>
+    </div>
+</div>
+<div class="row mb-lg-3">
+    <div class="col">
+        @if (Model?.TotalCount > 0)
+        {
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.PageIndex >= 2)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.PageIndex-1)>Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = Model.PageIndex; i <= Model.PageIndex + 5 && i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@i>@i</a>
+                        </li>
+                    }
+
+                    @if (Model.PageIndex < Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.PageIndex+1)>Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <select class="form-select">
+                @foreach(var type in ViewBag.Type)
+                {
+                    <option value="@type.Id">@type.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col">
+        <select class="form-select">
+            @foreach(var group in ViewBag.Group)
+            {
+                <option value="@group.Id">@group.Name</option>
+            }
+        </select>
+    </div>
+</div>
+@if (Model != null)
+{
+    @foreach (var course in Model.Items)
+    {
+        <div class="shadow p-3 mb-3 bg-white rounded">
+            <h3>@course.Name</h3>
+            <div class="btn-group" role="group">
+                <a type="button" class="btn btn-primary btn-sm">@course.CourseType</a>
+                <a type="button" class="btn btn-dark btn-sm">@course.CourseGroup</a>
+            </div>
+            <p>@course.Description</p>
+            <a asp-controller="Course" asp-action="GetModel" asp-route-id="@course.Id">More Info</a>
+        </div>
+    }
+}

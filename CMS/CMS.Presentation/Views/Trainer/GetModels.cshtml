@@ -1,0 +1,91 @@
+﻿@model CMS.Application.Models.PaginatedList<CMS.Application.Aggregates.Trainer.Queries.GetTrainers.Trainer>;
+@{
+    ViewData["Title"] = "Trainers";
+}
+<div class="row mb-lg-3">
+    <div class="col-md-6">
+        <h4>Trainers</h4>
+    </div>
+    <div class="col-md-6  text-right">
+        <a type="button" class="btn btn-primary btn-block" asp-controller="Trainer" asp-action="AddModel">Create Trainer</a>
+    </div>
+</div>
+<div class="row mb-lg-3">
+    <div class="col">
+        @if (Model?.TotalCount > 0)
+        {
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.PageIndex >= 2)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.PageIndex-1)>Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = Model.PageIndex; i <= Model.PageIndex + 5 && i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@i>@i</a>
+                        </li>
+                    }
+
+                    @if (Model.PageIndex < Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.PageIndex+1)>Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+</div>
+<div class="shadow p-3 mb-3 bg-white rounded">
+    <table class="table table-hover">
+        <tr>
+            <th colspan="1"><a>Name</a></th>
+            <th></th>
+            <th><a>Group</a></th>
+            <th><a>Order</a></th>
+            <th><a>Action</a></th>
+        </tr>
+
+        @if (Model != null)
+        {
+            @foreach (var trainer in Model.Items)
+            {
+                <tr>
+                    @if (trainer.Photo != null)
+                    {
+                        <th><img width="128" height="128" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(trainer.Photo))"/></th>
+                    }
+                    else
+                    {
+                        <th></th>
+                    }
+                    <td>@trainer.FirstName @trainer.LastName</td>
+                    <td>@trainer.TrainerGroup</td>
+                    <td>@trainer.VisualOrder</td>
+                    <td>
+                        <ul class="nav nav-list">
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-warning  btn-sm" asp-controller="Trainer" asp-action="UpdateModel" asp-route-id="@trainer.Id">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </li>
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-danger  btn-sm" asp-controller="Trainer" asp-action="DeleteModel" asp-route-id="@trainer.Id">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            }
+
+        }
+    </table>
+</div>
+
+

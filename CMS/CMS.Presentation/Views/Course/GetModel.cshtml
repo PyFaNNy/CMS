@@ -1,0 +1,61 @@
+﻿@model СMS.Models.GetCourseViewModel
+@{
+    ViewData["Title"] = "Course Info";
+}
+<div class="row mb-lg-3">
+    <div class="col-md-6">
+        <h4>@Model.Course.Name</h4>
+    </div>
+</div>
+<div class="btn-group" role="group">
+    <a type="button" class="btn btn-primary btn-sm">@Model.Course.CourseType</a>
+    <a type="button" class="btn btn-dark btn-sm">@Model.Course.CourseGroup</a>
+</div>
+<p>@Model.Course.Description</p>
+<div class="row">
+    <p>Trainers:
+    @foreach (var trainer in Model.Course.Trainers)
+    {
+        <a asp-controller="Course" asp-action="GetModel" asp-route-id="@Model.Course.Id" asp-route-trainerId="@trainer.Id">@trainer.FirstName @trainer.LastName</a>
+    }
+    </p>
+</div>
+<a type="button" class="btn btn-outline-dark" asp-controller="Course" asp-action="GetModelsUsers">Back to list</a>
+
+@if (Model.Trainer != null)
+{
+    <div class="modal fade" id="Trainer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">@Model.Trainer.FirstName @Model.Trainer.LastName</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            @if (Model.Trainer.Photo != null)
+                            {
+                                <img width="100%" height="100%" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(@Model.Trainer.Photo))"/>
+                            }
+                        </div>
+                        <div class="col-md-9">
+                            <p>Description: @Model.Trainer.Description</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    window.addEventListener('load', function () {
+        const elemModal = document.querySelector('#Trainer');
+        const modal = new bootstrap.Modal(elemModal);
+        modal.show();
+    });
+</script>

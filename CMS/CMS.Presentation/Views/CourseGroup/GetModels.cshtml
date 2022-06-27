@@ -1,0 +1,164 @@
+﻿@model СMS.Models.CourseGroupViewModel;
+@{
+    ViewData["Title"] = "Course Groups";
+}
+<div class="row mb-lg-3">
+    <div class="col-md-6">
+        <h4>Course Groups</h4>
+    </div>
+    <div class="col-md-6  text-right">
+        <button role="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Create Group</button>
+    </div>
+</div>
+<div class="row mb-lg-3">
+    <div class="col">
+        @if (Model.List?.TotalCount > 0)
+        {
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.List.PageIndex >= 2)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.List.PageIndex-1)>Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = Model.List.PageIndex; i <= Model.List.PageIndex + 5 && i <= Model.List.TotalPages; i++)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@i>@i</a>
+                        </li>
+                    }
+
+                    @if (Model.List.PageIndex < Model.List.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.List.PageIndex+1)>Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+</div>
+<div class="shadow p-3 mb-3 bg-white rounded">
+    <table class="table table-hover">
+        <tr>
+            <th><a>Name</a></th>
+            <th><a>Description</a></th>
+            <th><a>Order</a></th>
+            <th><a>Action</a></th>
+        </tr>
+
+        @if (Model != null)
+        {
+            @foreach (var group in Model.List.Items)
+            {
+                <tr>
+                    <td>@group.Name</td>
+                    <td>@group.Description</td>
+                    <td>@group.VisualOrder</td>
+                    <td>
+                        <ul class="nav nav-list">
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-warning  btn-sm" asp-controller="CourseGroup" asp-action="GetModels" asp-route-id="@group.Id">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </li>
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-danger  btn-sm" asp-controller="CourseGroup" asp-action="DeleteModel" asp-route-id="@group.Id">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            }
+
+        }
+    </table>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Group</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" enctype="multipart/form-data" asp-controller="CourseGroup" asp-action="AddModel">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="col">
+                        <div class="form-group mb-lg-2">
+                            <label asp-for="@Model.CreateModel.Name">Name</label><br />
+                            <input type="text" class="form-control" asp-for="@Model.CreateModel.Name" />
+                        </div>
+                        <div class="form-group  mb-lg-2">
+                            <label asp-for="@Model.CreateModel.VisualOrder">Order</label><br />
+                            <input type="number" class="form-control" asp-for="@Model.CreateModel.VisualOrder" />
+                        </div>
+                        <div class="form-group  mb-lg-2">
+                            <label asp-for="@Model.CreateModel.Description">Description</label><br />
+                            <textarea class="form-control" asp-for="@Model.CreateModel.Description" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@if (Model.Current != null)
+{
+    <div class="modal fade" id="EditModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit group</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" enctype="multipart/form-data" asp-controller="CourseGroup" asp-action="UpdateModel" asp-route-CourseGroupId="@Model.Current.Id">
+                    <div class="modal-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="col">
+                            <div class="form-group mb-lg-2">
+                                <label asp-for="@Model.EditModel.Name">Name</label><br />
+                                <input type="text" class="form-control" asp-for="@Model.EditModel.Name" value="@Model.Current.Name" />
+                            </div>
+                            <div class="form-group  mb-lg-2">
+                                <label asp-for="@Model.EditModel.VisualOrder">Order</label><br />
+                                <input type="number" class="form-control" asp-for="@Model.EditModel.VisualOrder" value="@Model.Current.VisualOrder" />
+                            </div>
+                            <div class="form-group  mb-lg-2">
+                                <label asp-for="@Model.EditModel.Description">Description</label><br />
+                                <textarea class="form-control" asp-for="@Model.EditModel.Description" rows="3" value="@Model.Current.Description"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    window.addEventListener('load', function () {
+        const elemModal = document.querySelector('#EditModel');
+        const modal = new bootstrap.Modal(elemModal);
+        modal.show();
+    });
+</script>
+

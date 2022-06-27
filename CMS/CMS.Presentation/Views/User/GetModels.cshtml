@@ -1,0 +1,92 @@
+﻿@model CMS.Application.Models.PaginatedList<CMS.Application.Aggregates.User.Queries.GetUsers.User>;
+@{
+    ViewData["Title"] = "Users";
+}
+<div class="row mb-lg-3">
+    <div class="col-md-6">
+        <h4>Users</h4>
+    </div>
+</div>
+<div class="row mb-lg-3">
+    <div class="col">
+        @if (Model?.TotalCount > 0)
+        {
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    @if (Model.PageIndex >= 2)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.PageIndex-1)>Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = Model.PageIndex; i <= Model.PageIndex + 5 && i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@i>@i</a>
+                        </li>
+                    }
+
+                    @if (Model.PageIndex < Model.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-route-pageIndex=@(@Model.PageIndex+1)>Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+</div>
+<div class="shadow p-3 mb-3 bg-white rounded"/>
+    <table class="table table-hover">
+        <tr>
+            <th colspan="1"><a>Name</a></th>
+            <th></th>
+            <th><a>Department</a></th>
+            <th><a>Position</a></th>
+            <th><a>Office</a></th>
+            <th><a>Active?</a></th>
+            <th>Action</th>
+        </tr>
+
+        @if (Model != null)
+        {
+            @foreach (var user in Model.Items)
+            {
+                <tr>
+                    
+                    @if (user.Photo != null)
+                    {
+                        <th><img width="128" height="128" src="@String.Format("data:image/jpg;base64,{0}", Convert.ToBase64String(user.Photo))"/></th>
+                    }
+                    else
+                    {
+                        <th></th>
+                    }
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>@user.Department</td>
+                    <td>@user.Position</td>
+                    <td>@user.Location</td>
+                    <td>@user.IsActive</td>
+                    <td>
+                        <ul class="nav nav-list">
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-primary  btn-sm" asp-controller="User" asp-action="GetModel" asp-route-id="@user.Id">
+                                    <i class="fa fa-info-circle"></i>
+                                </a>
+                            </li>
+                            <li style="list-style-type: none;" class="p-1">
+                                <a class="btn btn-outline-warning  btn-sm" asp-controller="User" asp-action="UpdateModel" asp-route-id="@user.Id">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+</div>
+
+
